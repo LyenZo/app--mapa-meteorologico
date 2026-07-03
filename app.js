@@ -34,6 +34,10 @@ document.getElementById("search-btn").addEventListener("click", async () => {
 
         const lugar = data[0];
 
+        // Conversión a número
+        const lat = Number(lugar.lat);
+        const lon = Number(lugar.lon);
+
         // Lógica de negocio
         let temp, humidity, condition;
 
@@ -55,24 +59,37 @@ document.getElementById("search-btn").addEventListener("click", async () => {
             condition = conditions[Math.floor(Math.random() * conditions.length)];
         }
 
-        // Renderizado en el DOM
+        // Límites para el mapa
+        const bbox = `${lon - 0.01},${lat - 0.01},${lon + 0.01},${lat + 0.01}`;
+
+        // Renderizado
         weatherCard.innerHTML = `
             <h3>📍 Ubicación Localizada: ${city}</h3>
 
             <p class="description">
-                <strong>Descripción oficial:</strong>
+                <strong>Descripción oficial:</strong><br>
                 ${lugar.display_name}
             </p>
 
             <div class="geo-data">
                 <p>
-                    <strong>Latitud:</strong> ${lugar.lat}
-                    &nbsp;|&nbsp;
-                    <strong>Longitud:</strong> ${lugar.lon}
+                    <strong>Latitud:</strong> ${lat}<br>
+                    <strong>Longitud:</strong> ${lon}
                 </p>
             </div>
 
-            <hr style="border: 0.5px solid #4ade80; margin: 15px 0;">
+            <div style="margin:20px 0;">
+                <iframe
+                    width="100%"
+                    height="350"
+                    frameborder="0"
+                    scrolling="no"
+                    style="border:1px solid #4ade80; border-radius:10px;"
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}">
+                </iframe>
+            </div>
+
+            <hr style="border:0.5px solid #4ade80; margin:15px 0;">
 
             <div class="weather-data">
                 <h4>🌤 Parámetros Climatológicos</h4>
@@ -85,6 +102,7 @@ document.getElementById("search-btn").addEventListener("click", async () => {
                 ✓ Datos de mapa meteorológico sincronizados con éxito.
             </div>
         `;
+
     } catch (error) {
         console.error(error);
 
